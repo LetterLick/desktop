@@ -1,7 +1,11 @@
+import 'package:desktop/logic/mail_read.dart';
+import 'package:enough_mail/smtp.dart';
 import 'package:flutter/material.dart';
 
 class MailItem extends StatelessWidget {
-  const MailItem({Key? key}) : super(key: key);
+  final MimeMessage mail;
+
+  const MailItem(this.mail, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,35 +31,42 @@ class MailItem extends StatelessWidget {
         padding: const EdgeInsets.only(top: 7, bottom: 7),
         child: Row(
           children: [
-            const Padding(
-              padding: EdgeInsets.only(right: 20, left: 10),
+            Padding(
+              padding: const EdgeInsets.only(right: 20, left: 10),
               child: Icon(
                 Icons.circle,
-                color: Colors.blue,
+                color:
+                    MailRead.getIsSeen(mail, true) ? Colors.blue : Colors.grey,
                 size: 15,
               ),
             ),
             Container(
               padding: const EdgeInsets.only(right: 10),
               width: 150,
-              child: const Text(
-                "email Adress dassfdasdf",
+              child: Text(
+                MailRead.toReadableList(
+                    MailRead.getSenderPersonalName(
+                      mail,
+                      MailRead.getSenderEmail(mail, ["UNKNOWN"]),
+                    ),
+                    ", "),
                 overflow: TextOverflow.fade,
                 softWrap: false,
               ),
             ),
-            const Expanded(
+            Expanded(
                 child: Text(
-              "🚀 Neuheiten und Weiterentwicklungen",
+              MailRead.getSubject(mail, ""),
               overflow: TextOverflow.fade,
               softWrap: false,
             )),
-            const Padding(
-              padding: EdgeInsets.only(right: 20, left: 20),
+            Padding(
+              padding: const EdgeInsets.only(right: 20, left: 20),
               child: Text(
-                "Mar 29",
-                style: TextStyle(color: Colors.grey),
+                MailRead.getDate(mail),
+                style: const TextStyle(color: Colors.grey),
                 softWrap: false,
+                textAlign: TextAlign.right,
               ),
             )
           ],

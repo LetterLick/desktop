@@ -17,7 +17,7 @@ class App extends StatelessWidget {
       ),
       themeMode: ThemeMode.dark,
       title: "Letter Lick Desktop",
-      home: const MainPage(),
+      home: MainPage(),
     );
   }
 }
