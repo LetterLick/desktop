@@ -6,16 +6,8 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      darkTheme: ThemeData(
-        scaffoldBackgroundColor: Colors.black,
-        iconTheme: const IconThemeData(color: Colors.white),
-        textTheme: const TextTheme(
-          bodyText1: TextStyle(color: Colors.white),
-          bodyText2: TextStyle(color: Colors.white),
-        ),
-      ),
-      themeMode: ThemeMode.dark,
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: "Letter Lick Desktop",
       home: MainPage(),
     );
