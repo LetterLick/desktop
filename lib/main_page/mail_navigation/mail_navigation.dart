@@ -2,20 +2,44 @@ import 'package:desktop/main_page/mail_navigation/account_item.dart';
 import 'package:flutter/material.dart';
 import 'package:desktop/logic/mail_controller.dart';
 
-class MailNaviagtion extends StatelessWidget {
+class MailNaviagtion extends StatefulWidget {
   final MailController mailctroller;
+
   const MailNaviagtion(this.mailctroller, {Key? key}) : super(key: key);
+
+  @override
+  State<MailNaviagtion> createState() => _MailNaviagtionState();
+}
+
+class _MailNaviagtionState extends State<MailNaviagtion> {
+  List<AccountItem> accountItems = [];
+
+  @override
+  void initState() {
+    widget.mailctroller.setUpdateNavigator = updateNavigator;
+    updateNavigator();
+    super.initState();
+  }
 
   void createNewEmail() {}
 
-  void syncEmail() {}
+  void updateNavigator() {
+    getTree();
+  }
+
+  void getTree() async {
+    accountItems = [];
+    for (var acc in widget.mailctroller.mailAccounts) {
+      accountItems.add(AccountItem(
+          widget.mailctroller, acc.id, acc.name, await acc.mailboxTree));
+    }
+    setState(() {
+      accountItems = [...accountItems];
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    const List<AccountItem> accounts = [];
-
-    for (var client in mailctroller.mailClients) {}
-
     return Container(
       color: Colors.white,
       child: Column(
@@ -45,7 +69,7 @@ class MailNaviagtion extends StatelessWidget {
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15))),
               ),
-              onPressed: syncEmail,
+              onPressed: widget.mailctroller.syncAll,
               child: SizedBox(
                 height: 50,
                 child: Row(
@@ -57,11 +81,8 @@ class MailNaviagtion extends StatelessWidget {
           ),
           Expanded(
             child: ListView(
-              padding: EdgeInsets.all(8),
-              children: [
-                AccountItem(),
-                AccountItem(),
-              ],
+              padding: const EdgeInsets.all(8),
+              children: accountItems,
             ),
           )
         ],

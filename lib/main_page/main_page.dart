@@ -1,6 +1,5 @@
 import 'package:desktop/logic/mail/data/email.dart';
-import 'package:desktop/logic/mail/data/mailbox.dart';
-import 'package:desktop/logic/mail_acc_details.dart';
+import 'package:desktop/logic/mail/mail_account.dart';
 import 'package:desktop/logic/mail_controller.dart';
 import 'package:desktop/main_page/mail_content/mail_content.dart';
 import 'package:desktop/main_page/mail_list/mail_list.dart';
@@ -16,24 +15,28 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  final MailController mail = MailController();
+  final MailController mailController = MailController();
   List<Email> displayMessages = [];
   Email? displayMessageRead;
   Widget drawer = Container();
 
   void loginEmail() async {
-    await mail.connectToAccounts([
-      MailAccDetails(dotenv.get("TESTMAIL_DOMAIN"), 993, true,
-          dotenv.get("TESTMAIL_USR"), dotenv.get("TESTMAIL_PASSWD"))
-    ]);
+    mailController.addAccount(MailAccount(
+        "asdf",
+        0,
+        dotenv.get("TESTMAIL_DOMAIN"),
+        dotenv.get("TESTMAIL_USR"),
+        dotenv.get("TESTMAIL_PASSWD")));
 
-    print(await mail.mailClients[0].listMailBoxes());
+    await mailController.connectToAccounts();
 
-    await mail.selectMailbox(Mailbox("INBOX", "", []));
+    //print(await mail.mailClients[0].listMailBoxes());
 
-    var res = await mail.getEmailIds();
-    print(res);
+    //await mail.selectMailbox(Mailbox("INBOX", "", []));
 
+    //var res = await mail.getEmailIds();
+    //print(res);
+/*
     for (var id in res[0]) {
       displayMessages.add(await mail.getEmail(id));
     }
@@ -41,6 +44,7 @@ class _MainPageState extends State<MainPage> {
     setState(() {
       displayMessages = displayMessages.reversed.toList();
     });
+    */
   }
 
   @override
@@ -70,7 +74,7 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       drawer: Drawer(
         width: 1000 * 0.2,
-        child: MailNaviagtion(mail),
+        child: MailNaviagtion(mailController),
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -96,9 +100,11 @@ class _MainPageState extends State<MainPage> {
           return Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              LayoutBox(MailNaviagtion(mail), hideFirst, screenWidth * 0.2),
+              LayoutBox(
+                  MailNaviagtion(mailController), hideFirst, screenWidth * 0.2),
               Expanded(
                   child: MailList(
+                mailController,
                 displayMessages,
                 selectMail,
                 openDrawer:

@@ -1,6 +1,46 @@
 import 'package:desktop/design.dart';
 import 'package:desktop/logic/mail/data/email.dart';
+import 'package:desktop/logic/mail_controller.dart';
 import 'package:flutter/material.dart';
+
+class MailItemFuture extends StatefulWidget {
+  MailController mailController;
+  int id;
+
+  MailItemFuture(this.mailController, this.id, {super.key});
+
+  @override
+  State<MailItemFuture> createState() => _MailItemFutureState();
+}
+
+class _MailItemFutureState extends State<MailItemFuture> {
+  Email? mail;
+  void nothing() {}
+
+  void getData() async {
+    mail = await widget.mailController.fetch(widget.id);
+
+    print(mail!.fromEmail);
+
+    setState(() {
+      mail;
+    });
+  }
+
+  @override
+  void initState() {
+    getData();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (mail != null) {
+      return MailItem(mail!, nothing);
+    }
+    return Text("data");
+  }
+}
 
 class MailItem extends StatelessWidget {
   final Email mail;

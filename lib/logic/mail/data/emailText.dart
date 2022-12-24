@@ -45,7 +45,8 @@ class EmailText {
     int indexStartCharset = line.indexOf('"') + 1;
     int indexEndCharset = line.indexOf('"', indexStartCharset);
     //todo: charset not in ""
-    String charsetString = line.substring(indexStartCharset, indexEndCharset);
+    String charsetString =
+        ""; //line.substring(indexStartCharset, indexEndCharset);
     String typeString = line.substring(indexStartType, indexEndType);
 
     return Tuple2<String, EmailTextType>(

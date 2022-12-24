@@ -2,8 +2,17 @@ class Mailbox {
   final String name;
   final String location;
   final List<String> tags;
+  List<Mailbox> children;
 
-  const Mailbox(this.name, this.location, this.tags);
+  Mailbox(this.name, this.location, this.tags, [this.children = const []]);
+
+  String get cleanName {
+    int pos = name.lastIndexOf("/");
+
+    if (pos < 0) return name;
+
+    return name.substring(pos + 1);
+  }
 
   factory Mailbox.fromResp(List<String> data) {
     //data
@@ -24,8 +33,24 @@ class Mailbox {
     return Mailbox(mailboxName, location, tags);
   }
 
+  static List<Mailbox> sortTree(List<Mailbox> boxs) {
+    return _sortTree("", boxs);
+  }
+
+  static List<Mailbox> _sortTree(String path, List<Mailbox> boxs) {
+    List<Mailbox> resList = [];
+    for (var box in boxs) {
+      if (box.name.startsWith(path) &&
+          !box.name.substring(path.length).contains("/")) {
+        box.children = _sortTree("${box.name}/", boxs);
+        resList.add(box);
+      }
+    }
+    return resList;
+  }
+
   @override
   String toString() {
-    return "{$name, $location, $tags}";
+    return "{$name, $location, $tags, $children}";
   }
 }

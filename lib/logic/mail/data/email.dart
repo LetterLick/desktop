@@ -82,7 +82,6 @@ class Email {
     //extract enevlop data
     EnvelopData envelope = _fromEnvelop(
         mailString.getRange(indexOfEnvelope, indexOfText - 1).toList());
-
     return Email(envelope.subject, plain, html, envelope.from, envelope.to,
         envelope.date);
   }
